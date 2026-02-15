@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text Tools</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <label for="modelSelect" class="model-label">Model:</label>
+        <select id="modelSelect">
+            <option value="gpt-4.1-mini">OpenAI GPT-4.1-mini</option>
+            <option value="gemini-2.5-flash">Gemini 2.5 Flash</option>
+            <option value="gemma3:8b">Gemma3 8B</option>
+            <option value="llama4:8b">Llama4 8B</option>
+        </select>
+        <textarea id="textBox" placeholder="Enter text here..."></textarea>
+        <div class="button-container">
+            <button id="generateBtn">Generate</button>
+            <button id="checkBtn">Check Orthography</button>
+        </div>
+    </div>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
