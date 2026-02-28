@@ -205,3 +205,6 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+promts/translations/**/*
+!promts/translations/*_en.md

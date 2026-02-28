@@ -18,17 +18,107 @@ body {
     box-sizing: border-box;
 }
 
-#textBox {
+.text-area-container {
+    position: relative;
     width: 100%;
-    /* fill remaining vertical space minus buttons and selector */
     height: calc(100vh - 180px);
+}
+
+#textBox,
+.diff-view {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
     background-color: #000;
     color: #fff;
     padding: 15px;
     border: 2px solid #555;
     border-radius: 5px;
-    resize: none;
     font-size: 16px;
+    font-family: monospace;
+}
+
+#textBox {
+    resize: none;
+    display: block;
+}
+
+.diff-view {
+    overflow: auto;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.diff-view .diff-line {
+    padding: 2px 0;
+    font-family: monospace;
+    line-height: 1.5;
+}
+
+.diff-view .diff-error {
+    display: inline;
+    color: #ff6b6b;
+    background: rgba(255, 107, 107, 0.2);
+}
+
+.diff-view .diff-correction,
+.diff-view .diff-correction-suggestion {
+    display: inline;
+    color: #51cf66;
+    background: rgba(81, 207, 102, 0.2);
+}
+
+.diff-view .diff-correction-suggestion {
+    margin-left: 2px;
+}
+
+.diff-view .diff-context {
+    color: #aaa;
+}
+
+.diff-view .diff-unchanged {
+    color: #fff;
+}
+
+.diff-view .diff-change {
+    display: inline;
+}
+
+.diff-view .diff-actions {
+    display: inline;
+    margin-left: 2px;
+}
+
+.diff-view .diff-actions .btn-accept,
+.diff-view .diff-actions .btn-deny {
+    display: inline;
+    padding: 0 3px;
+    font-size: 11px;
+    cursor: pointer;
+    background: transparent;
+    border: none;
+}
+
+.diff-view .diff-actions .btn-accept {
+    color: #51cf66;
+}
+
+.diff-view .diff-actions .btn-accept:hover {
+    background: rgba(81, 207, 102, 0.2);
+}
+
+.diff-view .diff-actions .btn-deny {
+    color: #ff6b6b;
+}
+
+.diff-view .diff-actions .btn-deny:hover {
+    background: rgba(255, 107, 107, 0.2);
+}
+
+.diff-view .diff-no-changes {
+    display: inline;
+    color: #888;
+    font-style: italic;
 }
 
 /* model selector styling */
