@@ -1,11 +1,26 @@
 // DOM elements
 const modelSelect = document.getElementById('modelSelect');
 const textBox = document.getElementById('textBox');
+const generateBtn = document.getElementById('generateBtn');
 const checkBtn = document.getElementById('checkBtn');
 const diffView = document.getElementById('diffView');
 const applyChangesBtn = document.getElementById('applyChangesBtn');
 const editAgainBtn = document.getElementById('editAgainBtn');
 const doneBtn = document.getElementById('doneBtn');
+const themeToggle = document.getElementById('themeToggle');
+
+// Theme toggle
+const savedTheme = localStorage.getItem('theme');
+if (savedTheme === 'light') {
+    document.documentElement.classList.add('light');
+    themeToggle.textContent = '☀️';
+}
+
+themeToggle.addEventListener('click', () => {
+    const isLight = document.documentElement.classList.toggle('light');
+    themeToggle.textContent = isLight ? '☀️' : '🌙';
+    localStorage.setItem('theme', isLight ? 'light' : 'dark');
+});
 
 // Call /set_model when model selector changes
 modelSelect.addEventListener('change', async () => {
@@ -167,9 +182,40 @@ function showEditMode() {
     doneBtn.style.display = 'none';
 }
 
+generateBtn.addEventListener('click', async () => {
+    const inputText = textBox.value;
+    diffView.innerHTML = '<span class="loading-indicator"><span class="loading-dots"><span></span><span></span><span></span></span>Generating…</span>';
+    textBox.style.display = 'none';
+    diffView.style.display = 'block';
+    applyChangesBtn.style.display = 'none';
+    editAgainBtn.style.display = 'none';
+    doneBtn.style.display = 'none';
+
+    try {
+        const response = await fetch("/generate", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ text: inputText })
+        });
+
+        if (!response.ok) throw new Error(`Server Error: ${response.status}`);
+
+        const data = await response.json();
+        const generatedText = data.generated_text || '';
+
+        diffView.innerHTML = escapeHtml(inputText) + (inputText ? '\n' : '') + '<span class="generated-text">' + escapeHtml(generatedText) + '</span>';
+        editAgainBtn.style.display = 'inline-block';
+        editAgainBtn._originalText = inputText + (inputText ? '\n' : '') + generatedText;
+    } catch (err) {
+        diffView.innerHTML = `<span class="diff-error">Error: ${escapeHtml(err.message)}</span>`;
+        editAgainBtn.style.display = 'inline-block';
+        editAgainBtn._originalText = inputText;
+    }
+});
+
 checkBtn.addEventListener('click', async () => {
     const originalText = textBox.value;
-    diffView.innerHTML = '<em style="color: #aaa;">Analyzing...</em>';
+    diffView.innerHTML = '<span class="loading-indicator"><span class="loading-dots"><span></span><span></span><span></span></span>Analyzing…</span>';
     textBox.style.display = 'none';
     diffView.style.display = 'block';
     applyChangesBtn.style.display = 'none';

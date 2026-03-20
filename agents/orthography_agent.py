@@ -1,12 +1,10 @@
 import re
 from typing import List, Dict, Any
 
-from pydantic import BaseModel, Field
-from commun import Models
-from langchain.agents import create_agent
+from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_ollama import ChatOllama
 from langchain_openai import ChatOpenAI
-from langchain_google_genai import ChatGoogleGenerativeAI
+from pydantic import BaseModel
 from langgraph.graph import StateGraph, END
 from langchain_core.messages import SystemMessage, HumanMessage
 import difflib
@@ -14,7 +12,8 @@ from utils import (
     OLLAMA_URL
 )
 from commun import (
-    Models
+    Models,
+    get_model_from_enum
 )
 
 
@@ -82,8 +81,9 @@ class OrthographyStatus(BaseModel):
     differences: List[str] | None = None
 
 class OrthographyAgent:
-    def __init__(self, model):
-        self.model = model
+    def __init__(self, model_name):
+        self.model = get_model_from_enum(model_name)
+
         builder = StateGraph(OrthographyStatus)
 
         builder.add_node("check_orthography", self.check_orthography_node)

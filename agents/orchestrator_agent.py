@@ -1,8 +1,9 @@
 import json
 from typing import List
 from pydantic import BaseModel
-from commun import Models
+from commun import Models, get_model_from_enum
 from agents.orthography_agent import OrthographyAgent
+from agents.generation_agent import GeneratorAgent
 from langgraph.graph import StateGraph, END
 from langchain_ollama import ChatOllama
 from langchain_openai import ChatOpenAI
@@ -28,29 +29,8 @@ class TranslationOutput(BaseModel):
     translation: str
 
 class Orchestrator:
-    def __init__(self, model = Models.LLAMA):
-        if model == Models.LLAMA:
-            self.model = ChatOllama(
-                model=Models.LLAMA.value,
-                temperature=0,
-                base_url=OLLAMA_URL
-            )
-        elif model == Models.OPEN_AI:
-            self.model = ChatOpenAI(
-                model=Models.OPEN_AI.value,
-                temperature=0
-            )
-        elif model == Models.GEMINI:
-            self.model = ChatGoogleGenerativeAI(
-                model=Models.GEMINI.value,
-                temperature=0
-            )
-        else:
-            self.model = ChatOllama(
-                model=Models.GEMMA.value,
-                temperature=0,
-                base_url=OLLAMA_URL
-            )
+    def __init__(self, model_name = Models.LLAMA):
+        self.model = get_model_from_enum(model_name)
         
         with open("./promts/language_selector_promt.md", "r", encoding="utf-8") as file:
             self.LANGUAGE_SELECTOR_PROMT = file.read()
@@ -62,7 +42,8 @@ class Orchestrator:
 
         self.languages = load_languages()
 
-        self.orthography_agent = OrthographyAgent(self.model)
+        self.orthography_agent = OrthographyAgent(model_name)
+        self.generator_agent = GeneratorAgent(model_name)
 
         builder = StateGraph(GraphState)
         builder.add_node("check_language", self.check_languge_node)
@@ -123,5 +104,7 @@ class Orchestrator:
         return {"diff": result["differences"], "new_text": result["corrected_text"]}
     
     def invoke(self, text: str, mode: str = "orthography"):
-        # Only orthography mode is supported for now
+        if mode == "generation":
+            result = self.generator_agent.invoke(text)
+            return {"new_text": result.get("output", ""), "diff": []}
         return self.orchestrator.invoke({"text": text, "mode": mode})

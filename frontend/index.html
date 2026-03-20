@@ -3,32 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Text Tools</title>
+    <title>AI Text Assistant</title>
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
     <div class="container">
-        <h2>AI Text Assistant</h2>
-        
-        <label for="modelSelect" class="model-label">Select Model:</label>
-        <select id="modelSelect">
-            <option value="llama4:8b">Llama4 8B</option>
-            <option value="gpt-4.1-mini">OpenAI GPT-4.1-mini</option>
-            <option value="gemini-2.5-flash">Gemini 2.5 Flash</option>
-            <option value="gemma3:8b">Gemma3 8B</option>
-        </select>
+        <div class="app-header">
+            <div class="logo">✦</div>
+            <div>
+                <h1>AI Text Assistant</h1>
+                <p class="subtitle">Generate &amp; correct text with local or cloud models</p>
+            </div>
+            <button id="themeToggle" title="Toggle light/dark mode">🌙</button>
+        </div>
+
+        <div class="toolbar">
+            <span class="model-label">Model</span>
+            <select id="modelSelect">
+                <option value="llama4:8b">Llama4 8B (local)</option>
+                <option value="gpt-4.1-mini">GPT-4.1 Mini</option>
+                <option value="gemini-2.5-flash">Gemini 2.5 Flash</option>
+                <option value="gemma3:8b">Gemma3 8B (local)</option>
+            </select>
+        </div>
 
         <div id="textAreaContainer" class="text-area-container">
-            <textarea id="textBox" placeholder="Enter text here..."></textarea>
+            <textarea id="textBox" placeholder="Start typing or paste your text here…"></textarea>
             <div id="diffView" class="diff-view" style="display: none;"></div>
         </div>
 
         <div class="button-container">
-            <button id="generateBtn">Generate</button>
-            <button id="checkBtn">Check Orthography</button>
-            <button id="applyChangesBtn" style="display: none;">Apply Corrections</button>
-            <button id="editAgainBtn" style="display: none;">Edit Again</button>
-            <button id="doneBtn" style="display: none;">Done</button>
+            <button id="generateBtn">&#9654; Generate</button>
+            <button id="checkBtn">&#10003; Check Orthography</button>
+            <div class="btn-spacer"></div>
+            <button id="applyChangesBtn" style="display: none;">&#8594; Apply Corrections</button>
+            <button id="editAgainBtn" style="display: none;">&#9998; Edit Again</button>
+            <button id="doneBtn" style="display: none;">&#10003; Done</button>
         </div>
     </div>
 

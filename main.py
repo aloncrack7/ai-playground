@@ -34,18 +34,22 @@ async def set_model(model: str):
         return {"status": "error", "message": f"Invalid model name: {model}"}
 
     global orchestrator_agent
-    orchestrator_agent = Orchestrator(model=model_enum)
+    orchestrator_agent = Orchestrator(model_name=model_enum)
 
     return {"status": "ok"}
 
 @app.post("/generate")
 async def generate(data: TextRequest):
-    text = data.text
+    global orchestrator_agent
+    if orchestrator_agent is None:
+        orchestrator_agent = Orchestrator(model_name=Models.LLAMA)
+    result = orchestrator_agent.invoke(data.text, mode="generation")
+    return {"diff": result["diff"], "generated_text": result["new_text"]}
 
 @app.post("/correct_orthography")
 async def correct_orthography(data: TextRequest):
     global orchestrator_agent
     if orchestrator_agent is None:
-        orchestrator_agent = Orchestrator(model=Models.LLAMA)
+        orchestrator_agent = Orchestrator(model_name=Models.LLAMA)
     result = orchestrator_agent.invoke(data.text, mode="orthography")
     return {"diff": result["diff"], "corrected_text": result["new_text"]}

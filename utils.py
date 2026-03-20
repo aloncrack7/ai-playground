@@ -22,7 +22,6 @@ def load_languages():
     files = os.listdir("./promts/translations")
     for file in files:
         file_name = os.path.splitext(file)[0]
-        print(file_name)
         language = re.search(r"_(\w{2})$", file_name)
         if language:
              languages.append(language.group(1))
